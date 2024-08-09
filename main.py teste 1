@@ -1,0 +1,77 @@
+#PRIMEIRA VERSÃO PARA TESTES;
+MAIN.PY VERSÃO 1.O
+
+import sys
+from datetime import datetime
+
+# Classe para representar uma Conta
+class Conta:
+    def __init__(self, descricao, valor, vencimento):
+        self.descricao = descricao
+        self.valor = valor
+        self.vencimento = datetime.strptime(vencimento, "%d/%m/%Y")
+        self.paga = False
+
+    def pagar(self):
+        self.paga = True
+
+    def __str__(self):
+        status = "Paga" if self.paga else "Pendente"
+        return f"Descrição: {self.descricao} | Valor: R${self.valor:.2f} | Vencimento: {self.vencimento.strftime('%d/%m/%Y')} | Status: {status}"
+
+# Lista para armazenar as contas
+contas = []
+
+# Função para cadastrar uma nova conta
+def cadastrar_conta():
+    descricao = input("Descrição da conta: ")
+    valor = float(input("Valor da conta (R$): "))
+    vencimento = input("Data de vencimento (dd/mm/aaaa): ")
+    conta = Conta(descricao, valor, vencimento)
+    contas.append(conta)
+    print("Conta cadastrada com sucesso!\n")
+
+# Função para listar todas as contas
+def listar_contas():
+    if not contas:
+        print("Nenhuma conta cadastrada.\n")
+    else:
+        print("Lista de Contas:")
+        for i, conta in enumerate(contas):
+            print(f"{i + 1}. {conta}")
+        print()
+
+# Função para marcar uma conta como paga
+def pagar_conta():
+    listar_contas()
+    numero = int(input("Digite o número da conta que deseja marcar como paga: ")) - 1
+    if 0 <= numero < len(contas):
+        contas[numero].pagar()
+        print("Conta marcada como paga!\n")
+    else:
+        print("Conta não encontrada.\n")
+
+# Função principal (menu)
+def main():
+    while True:
+        print("==== Sistema de Contas a Pagar ====")
+        print("1. Cadastrar nova conta")
+        print("2. Listar contas")
+        print("3. Marcar conta como paga")
+        print("4. Sair")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == '1':
+            cadastrar_conta()
+        elif opcao == '2':
+            listar_contas()
+        elif opcao == '3':
+            pagar_conta()
+        elif opcao == '4':
+            print("Saindo do sistema...")
+            sys.exit()
+        else:
+            print("Opção inválida. Tente novamente.\n")
+
+if __name__ == "__main__":
+    main()
