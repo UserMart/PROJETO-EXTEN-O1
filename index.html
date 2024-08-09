@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Contas a Pagar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Contas a Pagar</h1>
+
+        <form action="{{ url_for('cadastrar_conta') }}" method="POST">
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" required>
+            </div>
+            <div class="form-group">
+                <label for="valor">Valor (R$):</label>
+                <input type="number" id="valor" name="valor" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="vencimento">Data de Vencimento:</label>
+                <input type="date" id="vencimento" name="vencimento" required>
+            </div>
+            <button type="submit">Cadastrar Conta</button>
+        </form>
+
+        <h2>Contas Cadastradas</h2>
+        <ul>
+            {% for i, conta in enumerate(contas) %}
+                <li class="{% if conta.paga %}paga{% else %}pendente{% endif %}">
+                    {{ conta }}
+                    {% if not conta.paga %}
+                        <a href="{{ url_for('pagar_conta', conta_id=i) }}">Marcar como Paga</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
