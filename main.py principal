@@ -1,0 +1,43 @@
+from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
+
+app = Flask(__name__)
+
+# Classe para representar uma Conta
+class Conta:
+    def __init__(self, descricao, valor, vencimento):
+        self.descricao = descricao
+        self.valor = valor
+        self.vencimento = datetime.strptime(vencimento, "%Y-%m-%d")
+        self.paga = False
+
+    def pagar(self):
+        self.paga = True
+
+    def __str__(self):
+        status = "Paga" if self.paga else "Pendente"
+        return f"{self.descricao} - R${self.valor:.2f} - Vencimento: {self.vencimento.strftime('%d/%m/%Y')} - Status: {status}"
+
+# Lista para armazenar as contas
+contas = []
+
+@app.route('/')
+def index():
+    return render_template('index.html', contas=contas)
+
+@app.route('/cadastrar', methods=['POST'])
+def cadastrar_conta():
+    descricao = request.form['descricao']
+    valor = float(request.form['valor'])
+    vencimento = request.form['vencimento']
+    conta = Conta(descricao, valor, vencimento)
+    contas.append(conta)
+    return redirect(url_for('index'))
+
+@app.route('/pagar/<int:conta_id>')
+def pagar_conta(conta_id):
+    contas[conta_id].pagar()
+    return redirect(url_for('index'))
+
+if __name__ == "__main__":
+    app.run(debug=True)
